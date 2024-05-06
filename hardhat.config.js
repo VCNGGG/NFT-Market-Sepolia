@@ -18,8 +18,8 @@ module.exports = {
       chainId: 1337
     },
     sepolia: {
-      url: "https://eth-sepolia.g.alchemy.com/v2/IzOCKFmZ9gZ8vYan95h-3QB9y2RtBaBm",
-      accounts: [ "f8fef4100e443ec112509ea5c3ae869ffbaf280d2851c36e1bccec06a1982a75" ]
+      url: "<Sepolia url>",
+      accounts: [ "<You're private key>" ]
     }
   },
   solidity: {
