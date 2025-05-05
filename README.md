@@ -1,11 +1,35 @@
-# Basic NFT Marketplace end to end
+# 🖼️ Basic NFT Marketplace (End-to-End) – Sepolia Version
 
-This code is for the Tutorial [Build your own NFT Marketplace from Scratch](https://docs.alchemy.com/alchemy/) built by [alchemy.com](https://alchemy.com)
+This repository contains the complete code for an NFT Marketplace built from scratch, as demonstrated in the [Build Your Own NFT Marketplace](https://docs.alchemy.com/alchemy/) tutorial by [Alchemy](https://alchemy.com).
 
-To set up the repository and run the marketplace locally, run the below
+✅ Updated to deploy and interact with Ethereum’s **Sepolia testnet** using MetaMask and Hardhat.
+
+---
+
+## 🚀 Features
+
+- Mint NFTs (ERC-721 standard)
+- List NFTs for sale
+- Buy NFTs using Sepolia ETH
+- Connect with MetaMask
+- Deployed on Sepolia testnet
+
+---
+
+## 🧠 Tech Stack
+
+- **Solidity** (Smart Contracts)
+- **Hardhat** (Development Environment)
+- **React** (Frontend UI)
+- **Ethers.js** (Web3 integration)
+- **Alchemy + Sepolia** (Ethereum testnet support)
+
+---
+
+## 📦 Getting Started
+
+### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/OMGWINNING/NFT-Marketplace-Tutorial
-cd NFT-Marketplace-Tutorial
-npm install
-npm start
-```
+git clone https://github.com/tapesh1134/NFT-Marketplace-Using-Sepolia-ETH-
+cd NFT-Marketplace-Using-Sepolia-ETH-
