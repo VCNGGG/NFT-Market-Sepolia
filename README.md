@@ -1,4 +1,4 @@
-# 🖼️ Basic NFT Marketplace (End-to-End) – Sepolia Version
+# Basic NFT Marketplace (End-to-End) – Sepolia Version
 
 This repository contains the complete code for an NFT Marketplace built from scratch, as demonstrated in the [Build Your Own NFT Marketplace](https://docs.alchemy.com/alchemy/) tutorial by [Alchemy](https://alchemy.com).
 
