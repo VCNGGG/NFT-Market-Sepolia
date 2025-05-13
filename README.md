@@ -17,7 +17,6 @@ This repository contains the complete code for an NFT Marketplace built from scr
 ---
 
 ## 🧠 Tech Stack
-
 - **Solidity** (Smart Contracts)
 - **Hardhat** (Development Environment)
 - **React** (Frontend UI)
@@ -27,7 +26,6 @@ This repository contains the complete code for an NFT Marketplace built from scr
 ---
 
 ## 📦 Getting Started
-
 ### 1. Clone the Repository
 
 ```bash
