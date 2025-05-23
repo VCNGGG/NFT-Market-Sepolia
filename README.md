@@ -13,7 +13,6 @@ This repository contains the complete code for an NFT Marketplace built from scr
 - Buy NFTs using Sepolia ETH
 - Connect with MetaMask
 - Deployed on Sepolia testnet
-
 ---
 
 ## 🧠 Tech Stack
