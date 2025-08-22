@@ -3,7 +3,7 @@ import NFTTile from "./NFTTile";
 import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
 import { useState } from "react";
-import { GetIpfsUrlFromPinata } from "../utils";
+import { GetIpfsUrlFromPinata, safeAxiosGet } from "../utils";
 
 export default function Marketplace() {
   const sampleData = [
@@ -42,17 +42,28 @@ export default function Marketplace() {
   async function getAllNFTs() {
     const ethers = require("ethers");
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
+    const accounts = await provider.listAccounts();
+    const signer = accounts && accounts.length > 0 ? provider.getSigner() : null;
+    const code = await provider.getCode(MarketplaceJSON.address);
+    if (!code || code === "0x") {
+      console.warn("Contract not found at address:", MarketplaceJSON.address);
+      updateFetched(true);
+      updateData([]);
+      return;
+    }
+    const contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer || provider);
 
     const transaction = await contract.getAllNFTs();
 
     const items = await Promise.all(
       transaction.map(async (i) => {
-        var tokenURI = await contract.tokenURI(i.tokenId);
+        let tokenURI = await contract.tokenURI(i.tokenId);
         tokenURI = GetIpfsUrlFromPinata(tokenURI);
-        let meta = await axios.get(tokenURI);
-        meta = meta.data;
+        const res = await safeAxiosGet(axios, tokenURI);
+        if (!res || !res.data) {
+          return null;
+        }
+        const meta = res.data;
 
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
@@ -70,7 +81,7 @@ export default function Marketplace() {
     );
 
     updateFetched(true);
-    updateData(items);
+    updateData(items.filter(Boolean));
   }
 
   if (!dataFetched) {

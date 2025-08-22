@@ -15,16 +15,32 @@ export default function Profile() {
     const ethers = require("ethers");
     let sumPrice = 0;
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const accounts = await provider.listAccounts();
+    if (!accounts || accounts.length === 0) {
+      updateFetched(true);
+      return;
+    }
     const signer = provider.getSigner();
-    const addr = await signer.getAddress();
+    const addr = accounts[0];
+    const code = await provider.getCode(MarketplaceJSON.address);
+    if (!code || code === "0x") {
+      updateFetched(true);
+      return;
+    }
     const contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
 
     const transaction = await contract.getMyNFTs();
     const items = await Promise.all(
       transaction.map(async (i) => {
-        const tokenURI = await contract.tokenURI(i.tokenId);
-        let meta = await axios.get(tokenURI);
-        meta = meta.data;
+        let tokenURI = await contract.tokenURI(i.tokenId);
+        // normalize to gateway if needed
+        try {
+          const res = await axios.get(tokenURI);
+          if (!res || !res.data) return null;
+          var meta = res.data;
+        } catch (_) {
+          return null;
+        }
 
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
@@ -41,7 +57,7 @@ export default function Profile() {
       })
     );
 
-    updateData(items);
+    updateData(items.filter(Boolean));
     updateFetched(true);
     updateAddress(addr);
     updateTotalPrice(sumPrice.toPrecision(3));

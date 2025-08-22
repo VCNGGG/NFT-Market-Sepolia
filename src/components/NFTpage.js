@@ -3,7 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
 import { useState } from "react";
-import { GetIpfsUrlFromPinata } from "../utils";
+import { GetIpfsUrlFromPinata, safeAxiosGet } from "../utils";
 
 export default function NFTPage(props) {
   const [data, updateData] = useState({});
@@ -14,14 +14,25 @@ export default function NFTPage(props) {
   async function getNFTData(tokenId) {
     const ethers = require("ethers");
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const addr = await signer.getAddress();
-    let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
+    const accounts = await provider.listAccounts();
+    const hasAccount = accounts && accounts.length > 0;
+    const signer = hasAccount ? provider.getSigner() : null;
+    const addr = hasAccount ? accounts[0] : "0x";
+    const code = await provider.getCode(MarketplaceJSON.address);
+    if (!code || code === "0x") {
+      updateDataFetched(true);
+      return;
+    }
+    let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer || provider);
     let tokenURI = await contract.tokenURI(tokenId);
     const listedToken = await contract.getListedTokenForId(tokenId);
     tokenURI = GetIpfsUrlFromPinata(tokenURI);
-    let meta = await axios.get(tokenURI);
-    meta = meta.data;
+    const res = await safeAxiosGet(axios, tokenURI);
+    if (!res || !res.data) {
+      updateDataFetched(true);
+      return;
+    }
+    const meta = res.data;
 
     let item = {
       price: meta.price,

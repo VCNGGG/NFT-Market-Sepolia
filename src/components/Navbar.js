@@ -11,10 +11,15 @@ function Navbar() {
   const [currAddress, updateAddress] = useState('0x');
 
   async function getAddress() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const addr = await signer.getAddress();
-    updateAddress(addr);
+    try {
+      if (!window.ethereum) return;
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+      if (!accounts || accounts.length === 0) return;
+      updateAddress(accounts[0]);
+    } catch (_) {
+      // ignore; user not connected yet
+    }
   }
 
   function updateButton() {
@@ -49,11 +54,17 @@ function Navbar() {
 
   useEffect(() => {
     if (!window.ethereum) return;
-    if (window.ethereum.isConnected()) {
-      getAddress();
-      toggleConnect(true);
-      updateButton();
-    }
+    (async () => {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts && accounts.length > 0) {
+          updateAddress(accounts[0]);
+          toggleConnect(true);
+          updateButton();
+        }
+      } catch (_) {}
+    })();
 
     window.ethereum.on('accountsChanged', () => {
       window.location.replace(location.pathname);
